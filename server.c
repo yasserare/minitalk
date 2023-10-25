@@ -1,35 +1,34 @@
 #include <stdio.h>
-#include <unistd.h>
 #include <signal.h>
+#include <unistd.h>
 
-void signal_handler(int signal)
+
+static void signal_handler(int signal)
 {
-    printf("recieved signal\n");
-    if (signal == SIGUSR1)
-        printf("1");
-    else if (signal == SIGUSR2)
-        printf("0");
-    printf("\n");
+    static int i;
+    static char c;
+
+    c |= (signal == SIGUSR1);
+
+    if (++i == 8) {
+        printf("%c\n", c);
+        i = 0;
+        c = 0;
+    }
+    else
+        c <<= 1;
 }
 
 int main() {
-    pid_t pid = getpid();
-    printf("Process ID (PID): %d\n", pid);
-    
-    int i = 0;
-    while (i < 8)
-    {
-        if (signal(SIGUSR1, signal_handler))
-            printf("Recieved signal handler 1\n");
-        else if (signal(SIGUSR2, signal_handler))
-            printf("Recieved signal handler 2\n");
-        //pause();
-        i++;
+
+    printf("pid: %i\n", getpid());
+
+    signal(SIGUSR1, signal_handler);
+    signal(SIGUSR2, signal_handler);
+
+    while (1) {
+        pause();
     }
-
-    sleep(10); // Sleep for 10 seconds to keep the program running
-
-    while (1) {};
 
     return 0;
 }

@@ -7,15 +7,22 @@ void convert_and_send(int pid, char c)
 {
     printf("pid => %i\n", pid);
     int i = 0;
+    int err = 0;
+
     while(i < 8)
     {
         if (c & 128)
-            kill(pid, SIGUSR1);
+            err = kill(pid, SIGUSR1);
         else
-            kill(pid, SIGUSR2);
+            err = kill(pid, SIGUSR2);
+        if (err == -1)
+        {
+            printf("Failure transmating !");
+            exit(EXIT_FAILURE);
+        }
         c <<= 1;
         i++;
-        sleep(1);
+        usleep(170);
     }
 }
 
@@ -26,8 +33,6 @@ int main(int argc, char *argv[])
         int pid = atoi(argv[1]);
         char *string = argv[2];
         printf("The string is %s and the pid is %i\n", string, pid);
-        //send string to that pid
-            //convert each byte into binary and send 
         int i = 0;
         while (string[i])
             convert_and_send(pid, string[i++]);
