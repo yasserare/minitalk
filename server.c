@@ -11,7 +11,7 @@ static void signal_handler(int signal)
     c |= (signal == SIGUSR1);
 
     if (++i == 8) {
-        printf("%c\n", c);
+        write(1, &c, 1);
         i = 0;
         c = 0;
     }

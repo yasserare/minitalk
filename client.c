@@ -22,7 +22,7 @@ void convert_and_send(int pid, char c)
         }
         c <<= 1;
         i++;
-        usleep(170);
+        usleep(300);
     }
 }
 
