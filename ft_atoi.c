@@ -1,41 +1,38 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   server.c                                           :+:      :+:    :+:   */
+/*   ft_atoi.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: yasserar <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/10/26 08:52:08 by yasserar          #+#    #+#             */
-/*   Updated: 2023/10/26 08:56:22 by yasserar         ###   ########.fr       */
+/*   Created: 2023/10/26 08:59:22 by yasserar          #+#    #+#             */
+/*   Updated: 2023/10/26 08:59:23 by yasserar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minitalk.h"
 
-static	void	signal_handler(int signal)
+int	ft_atoi(const char *nptr)
 {
-	static int		i;
-	static char		c;
+	int	i;
+	int	sign;
+	int	result;
 
-	c |= (signal == SIGUSR1);
-	if (++i == 8)
+	i = 0;
+	sign = 1;
+	result = 0;
+	while ((nptr[i] >= 9 && nptr[i] <= 13) || nptr[i] == 32)
+		i++;
+	if (nptr[i] == '-')
 	{
-		write(1, &c, 1);
-		i = 0;
-		c = 0;
+		sign *= -1;
+		i++;
 	}
-	else
-		c <<= 1;
-}
-
-int	main(void)
-{
-	ft_printf("pid: %i\n", getpid());
-	signal(SIGUSR1, signal_handler);
-	signal(SIGUSR2, signal_handler);
-	while (1)
-	{
-		pause();
-	}
-	return (0);
+	else if (nptr[i] == '+')
+		i++;
+	while (nptr[i] >= '0' && nptr[i] <= '9')
+		result = result * 10 + (nptr[i++] - '0');
+	if (result > INT_MAX || result < INT_MIN)
+		return (0);
+	return (result * sign);
 }
